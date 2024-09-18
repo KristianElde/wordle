@@ -1,20 +1,16 @@
 package no.uib.inf102.wordle.controller;
 
+import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
-import java.awt.event.KeyListener;
 
 import javax.swing.Timer;
 
-import no.uib.inf102.wordle.controller.AI.EliminateStrategy;
-import no.uib.inf102.wordle.controller.AI.IStrategy;
-import no.uib.inf102.wordle.controller.AI.RandomStrategy;
 import no.uib.inf102.wordle.controller.AI.FrequencyStrategy;
+import no.uib.inf102.wordle.controller.AI.IStrategy;
 import no.uib.inf102.wordle.model.Dictionary;
 import no.uib.inf102.wordle.model.GameState;
 import no.uib.inf102.wordle.model.word.WordleWord;
 import no.uib.inf102.wordle.view.gameView.WordleView;
-
-import java.awt.event.ActionEvent;
 
 public class WordleAIController extends WordleController {
 
@@ -28,10 +24,10 @@ public class WordleAIController extends WordleController {
 
         Dictionary dictionary = model.getDictionary();
         this.timer = new Timer(model.getTimerDelay(), this::clockTick);
-        this.AI = new RandomStrategy(dictionary);
-        //this.AI = new EliminateStrategy(dictionary);
-        //this.AI = new FrequencyStrategy(dictionary);
-        //this.AI = new MyStrategy(dictionary);
+        // this.AI = new RandomStrategy(dictionary);
+        // this.AI = new EliminateStrategy(dictionary);
+        this.AI = new FrequencyStrategy(dictionary);
+        // this.AI = new MyStrategy(dictionary);
 
         view.addKeyListener(this);
         view.setFocusable(true);
@@ -70,9 +66,11 @@ public class WordleAIController extends WordleController {
     }
 
     @Override
-    public void keyReleased(KeyEvent e) {}
+    public void keyReleased(KeyEvent e) {
+    }
 
     @Override
-    public void keyTyped(KeyEvent e) {}
+    public void keyTyped(KeyEvent e) {
+    }
 
 }

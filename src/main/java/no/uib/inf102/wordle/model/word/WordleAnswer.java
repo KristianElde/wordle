@@ -1,5 +1,6 @@
 package no.uib.inf102.wordle.model.word;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Random;
 
@@ -89,13 +90,29 @@ public class WordleAnswer {
             throw new IllegalArgumentException("Guess and answer must have same number of letters but guess = " + guess
                     + " and answer = " + answer);
 
-        // TODO: Implement me :)
+        HashMap<Character, Integer> answerMap = new HashMap<>();
+        for (Character c : answer.toCharArray())
+            answerMap.put(c, answerMap.getOrDefault(c, 0) + 1);
 
         AnswerType[] feedback = new AnswerType[wordLength];
         for (int i = 0; i < wordLength; i++) {
-            feedback[i] = AnswerType.WRONG;
+            Character curr = guess.charAt(i);
+            if (curr == answer.charAt(i)) {
+                feedback[i] = AnswerType.CORRECT;
+                answerMap.put(curr, answerMap.get(curr) - 1);
+            }
+        }
+        for (int i = 0; i < wordLength; i++) {
+            Character curr = guess.charAt(i);
+            if (feedback[i] != AnswerType.CORRECT) {
+                if (answerMap.getOrDefault(curr, 0) > 0) {
+                    feedback[i] = AnswerType.MISPLACED;
+                    answerMap.put(curr, answerMap.get(curr) - 1);
+                } else
+                    feedback[i] = AnswerType.WRONG;
+            }
         }
 
-        return new WordleWord(guess,feedback);
+        return new WordleWord(guess, feedback);
     }
 }

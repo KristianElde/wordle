@@ -2,9 +2,7 @@ package no.uib.inf102.wordle.model.word;
 
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import no.uib.inf102.wordle.model.Dictionary;
 
@@ -61,7 +59,13 @@ public class WordleWordList {
 	 * @param feedback
 	 */
 	public void eliminateWords(WordleWord feedback) {
-		// TODO: Implement me :)
+		List<String> newPossibleAnswers = new ArrayList<>();
+		for (String possibleAnswer : this.possibleAnswers) {
+			if (WordleWord.isPossibleWord(possibleAnswer, feedback))
+				newPossibleAnswers.add(possibleAnswer);
+		}
+
+		this.possibleAnswers = newPossibleAnswers;
 	}
 
 	/**

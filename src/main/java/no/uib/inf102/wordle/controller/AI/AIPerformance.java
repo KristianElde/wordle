@@ -25,10 +25,10 @@ public class AIPerformance {
     public static void main(String[] args) {
         // Strategies
         List<IStrategy> strategies = new ArrayList<>();
-        strategies.add(new RandomStrategy(dictionary));
-        //strategies.add(new EliminateStrategy(dictionary));
-        //strategies.add(new FrequencyStrategy(dictionary));
-        //strategies.add(new MyStrategy(dictionary));
+        // strategies.add(new RandomStrategy(dictionary));
+        strategies.add(new EliminateStrategy(dictionary));
+        strategies.add(new FrequencyStrategy(dictionary));
+        // strategies.add(new MyStrategy(dictionary));
 
         Map<IStrategy, AIStatistics> stats = new HashMap<>();
         System.out.println("\nStrategies running...");
@@ -63,7 +63,7 @@ public class AIPerformance {
     public static AIStatistics runWordleGames(IStrategy strategy) {
         String strategyName = strategy.getClass().getSimpleName();
         AIStatistics stats = new AIStatistics(strategyName);
-        //set a seed so that all strategies are given the same set of words
+        // set a seed so that all strategies are given the same set of words
         Random rnd = new Random(seed);
 
         for (int i = 0; i < N_GAMES; i++) {
