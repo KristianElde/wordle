@@ -28,7 +28,8 @@ public class AIPerformance {
         // strategies.add(new RandomStrategy(dictionary));
         strategies.add(new EliminateStrategy(dictionary));
         strategies.add(new FrequencyStrategy(dictionary));
-        // strategies.add(new MyStrategy(dictionary));
+        strategies.add(new EntropyStrategy(dictionary));
+        strategies.add(new EntropyStrategy2(dictionary));
 
         Map<IStrategy, AIStatistics> stats = new HashMap<>();
         System.out.println("\nStrategies running...");
@@ -36,6 +37,7 @@ public class AIPerformance {
                 "---------------------------------------------------------------------------------------------");
         for (IStrategy strategy : strategies) {
             stats.put(strategy, runWordleGames(strategy));
+            // stats.put(strategy, runAllWordleGames(strategy));
         }
 
         System.out.println(
@@ -71,9 +73,31 @@ public class AIPerformance {
                 WordleAnswer answer = new WordleAnswer(rnd, dictionary);
                 int guesses = runWordleGame(strategy, answer);
                 stats.addGame(guesses);
-                printProgress(strategyName, i + 1, true);
+                printProgress(strategyName, i + 1, true, N_GAMES);
             } catch (IllegalStateException e) {
-                printProgress(strategyName, i + 1, false);
+                printProgress(strategyName, i + 1, false, N_GAMES);
+                stats.failed();
+            }
+            strategy.reset();
+        }
+        System.out.println();
+        return stats;
+    }
+
+    public static AIStatistics runAllWordleGames(IStrategy strategy) {
+        String strategyName = strategy.getClass().getSimpleName();
+        AIStatistics stats = new AIStatistics(strategyName);
+        // set a seed so that all strategies are given the same set of words
+        List<String> allAnswers = dictionary.getAnswerWordsList();
+        int totalGames = allAnswers.size();
+        for (int i = 0; i < dictionary.getAnswerWordsList().size(); i++) {
+            try {
+                WordleAnswer answer = new WordleAnswer(allAnswers.get(i), dictionary);
+                int guesses = runWordleGame(strategy, answer);
+                stats.addGame(guesses);
+                printProgress(strategyName, i + 1, true, totalGames);
+            } catch (IllegalStateException e) {
+                printProgress(strategyName, i + 1, false, totalGames);
                 stats.failed();
             }
             strategy.reset();
@@ -115,12 +139,12 @@ public class AIPerformance {
      * @param game         The current game
      * @param gameWon      If the game was won
      */
-    public static void printProgress(String strategyName, int game, boolean gameWon) {
+    public static void printProgress(String strategyName, int game, boolean gameWon, int totalGames) {
         float length = 50f;
-        float progress = ((float) game / N_GAMES) * length;
+        float progress = ((float) game / totalGames) * length;
         String progressString = "=".repeat((int) progress);
         System.out.printf("\b\r%-25s [%-50s] (%4s /%5s) | Latest game: %s", strategyName + ":", progressString, game,
-                N_GAMES,
+                totalGames,
                 gameWon ? "won" : "lost");
     }
 }

@@ -34,6 +34,11 @@ public class WordleWordList {
 		this.possibleAnswers = new ArrayList<>(dictionary.getAnswerWordsList());
 	}
 
+	public WordleWordList(Dictionary dictionary, List<String> possibleAnswers) {
+		this.allWords = dictionary;
+		this.possibleAnswers = possibleAnswers;
+	}
+
 	/**
 	 * Get the list of all guessing words.
 	 * 
