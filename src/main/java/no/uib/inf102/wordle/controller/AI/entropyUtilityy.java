@@ -9,7 +9,7 @@ import no.uib.inf102.wordle.model.word.WordleAnswer;
 import no.uib.inf102.wordle.model.word.WordleCharacter;
 import no.uib.inf102.wordle.model.word.WordleWord;
 
-public class EntropyUtility {
+public class entropyUtilityy {
     /**
      * Constructs a {@link WordleWord} object based on the provided guess, feedback
      * string, and word length.

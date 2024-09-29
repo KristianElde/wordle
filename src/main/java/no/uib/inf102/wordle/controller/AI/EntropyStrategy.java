@@ -36,7 +36,7 @@ public class EntropyStrategy implements IStrategy {
         String bestGuess = null;
 
         for (String guess : dictionary.getGuessWordsList()) {
-            CandidateGuess candidateGuess = EntropyUtility.informationGain(guess, guesses.possibleAnswers());
+            CandidateGuess candidateGuess = entropyUtilityy.informationGain(guess, guesses.possibleAnswers());
             if (candidateGuess.getInfoGain() > bestInfoGain) {
                 bestGuess = candidateGuess.getGuess();
                 bestInfoGain = candidateGuess.getInfoGain();

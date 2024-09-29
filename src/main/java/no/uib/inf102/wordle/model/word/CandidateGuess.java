@@ -33,7 +33,7 @@ public class CandidateGuess implements Comparable<CandidateGuess> {
 
     @Override
     public String toString() {
-        return this.guess;
+        return String.format("%s: %f", this.guess, this.infoGain);
     }
 
 }

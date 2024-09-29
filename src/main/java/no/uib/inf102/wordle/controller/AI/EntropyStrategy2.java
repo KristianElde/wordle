@@ -36,16 +36,16 @@ public class EntropyStrategy2 implements IStrategy {
         PriorityQueue<CandidateGuess> bestGuesses = new PriorityQueue<>();
 
         for (String guess : dictionary.getGuessWordsList()) {
-            CandidateGuess candidateGuess = EntropyUtility.informationGain(guess, guesses.possibleAnswers());
-            if (bestGuesses.size() < 20)
-                bestGuesses.add(candidateGuess);
-            else if (candidateGuess.getInfoGain() > bestGuesses.peek().getInfoGain()) {
+            CandidateGuess candidateGuess = entropyUtilityy.informationGain(guess, guesses.possibleAnswers());
+            bestGuesses.add(candidateGuess);
+
+            if (bestGuesses.size() > 20)
                 bestGuesses.poll();
-                bestGuesses.add(candidateGuess);
-            }
+
         }
         if (n_guesses == 0)
             System.out.println(bestGuesses);
+
         double bestInfoGain = Double.MIN_VALUE;
         String bestGuess = null;
 
@@ -55,14 +55,16 @@ public class EntropyStrategy2 implements IStrategy {
             for (String outcome : candidateGuess.getOutcomeFrequencies().keySet()) {
                 WordleWordList wordList = new WordleWordList(dictionary,
                         guesses.possibleAnswers());
-                WordleWord word = EntropyUtility.wordleWord(candidateGuess.getGuess(), outcome, dictionary.WORD_LENGTH);
+                WordleWord word = entropyUtilityy.wordleWord(candidateGuess.getGuess(), outcome,
+                        dictionary.WORD_LENGTH);
                 wordList.eliminateWords(word);
+
                 double p = ((double) candidateGuess.getOutcomeFrequencies().get(outcome))
                         / guesses.possibleAnswers().size();
 
                 for (String guess : wordList.possibleAnswers())
                     currentInfoGain = Math.max(currentInfoGain,
-                            EntropyUtility.informationGain(guess, wordList.possibleAnswers()).getInfoGain());
+                            entropyUtilityy.informationGain(guess, wordList.possibleAnswers()).getInfoGain());
                 infoGain += p * currentInfoGain;
 
             }
