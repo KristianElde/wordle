@@ -99,7 +99,7 @@ public class EntropyParallelized implements IStrategy {
             CandidateGuess localBestGuess = new CandidateGuess("", Double.MIN_VALUE, null);
 
             for (String guess : guesses) {
-                CandidateGuess candidateGuess = entropyUtilityy.informationGain(guess, possibleAnswers);
+                CandidateGuess candidateGuess = EntropyUtility.informationGain(guess, possibleAnswers);
                 if (candidateGuess.getInfoGain() > localBestGuess.getInfoGain()) {
                     localBestGuess = candidateGuess;
                 }

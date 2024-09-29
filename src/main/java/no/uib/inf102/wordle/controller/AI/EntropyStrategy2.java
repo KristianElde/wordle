@@ -36,7 +36,7 @@ public class EntropyStrategy2 implements IStrategy {
         PriorityQueue<CandidateGuess> bestGuesses = new PriorityQueue<>();
 
         for (String guess : dictionary.getGuessWordsList()) {
-            CandidateGuess candidateGuess = entropyUtilityy.informationGain(guess, guesses.possibleAnswers());
+            CandidateGuess candidateGuess = EntropyUtility.informationGain(guess, guesses.possibleAnswers());
             bestGuesses.add(candidateGuess);
 
             if (bestGuesses.size() > 20)
@@ -55,7 +55,7 @@ public class EntropyStrategy2 implements IStrategy {
             for (String outcome : candidateGuess.getOutcomeFrequencies().keySet()) {
                 WordleWordList wordList = new WordleWordList(dictionary,
                         guesses.possibleAnswers());
-                WordleWord word = entropyUtilityy.wordleWord(candidateGuess.getGuess(), outcome,
+                WordleWord word = EntropyUtility.wordleWord(candidateGuess.getGuess(), outcome,
                         dictionary.WORD_LENGTH);
                 wordList.eliminateWords(word);
 
@@ -64,7 +64,7 @@ public class EntropyStrategy2 implements IStrategy {
 
                 for (String guess : wordList.possibleAnswers())
                     currentInfoGain = Math.max(currentInfoGain,
-                            entropyUtilityy.informationGain(guess, wordList.possibleAnswers()).getInfoGain());
+                            EntropyUtility.informationGain(guess, wordList.possibleAnswers()).getInfoGain());
                 infoGain += p * currentInfoGain;
 
             }
