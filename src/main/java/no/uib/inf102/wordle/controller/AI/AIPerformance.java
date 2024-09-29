@@ -28,7 +28,7 @@ public class AIPerformance {
         // strategies.add(new RandomStrategy(dictionary));
         strategies.add(new EliminateStrategy(dictionary));
         strategies.add(new FrequencyStrategy(dictionary));
-        strategies.add(new EntropyStrategy(dictionary));
+        strategies.add(new MyStrategy(dictionary));
         strategies.add(new EntropyStrategy2(dictionary));
         // strategies.add(new EntropyParallelized(dictionary));
 

@@ -5,13 +5,13 @@ import no.uib.inf102.wordle.model.word.CandidateGuess;
 import no.uib.inf102.wordle.model.word.WordleWord;
 import no.uib.inf102.wordle.model.word.WordleWordList;
 
-public class EntropyStrategy implements IStrategy {
+public class MyStrategy implements IStrategy {
 
     private final Dictionary dictionary;
     private WordleWordList guesses;
     private String firstGuessWord = null;
 
-    public EntropyStrategy(Dictionary dict) {
+    public MyStrategy(Dictionary dict) {
         this.dictionary = dict;
         reset();
     }
