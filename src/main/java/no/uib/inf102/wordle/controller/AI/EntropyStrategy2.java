@@ -44,10 +44,13 @@ public class EntropyStrategy2 implements IStrategy {
                 bestGuesses.add(candidateGuess);
             }
         }
+        if (n_guesses == 0)
+            System.out.println(bestGuesses);
         double bestInfoGain = Double.MIN_VALUE;
         String bestGuess = null;
 
         for (CandidateGuess candidateGuess : bestGuesses) {
+            Double currentInfoGain = 0d;
             Double infoGain = candidateGuess.getInfoGain();
             for (String outcome : candidateGuess.getOutcomeFrequencies().keySet()) {
                 WordleWordList wordList = new WordleWordList(dictionary,
@@ -58,7 +61,9 @@ public class EntropyStrategy2 implements IStrategy {
                         / guesses.possibleAnswers().size();
 
                 for (String guess : wordList.possibleAnswers())
-                    infoGain += p * (EntropyUtility.informationGain(guess, wordList.possibleAnswers()).getInfoGain());
+                    currentInfoGain = Math.max(currentInfoGain,
+                            EntropyUtility.informationGain(guess, wordList.possibleAnswers()).getInfoGain());
+                infoGain += p * currentInfoGain;
 
             }
             if (infoGain > bestInfoGain) {

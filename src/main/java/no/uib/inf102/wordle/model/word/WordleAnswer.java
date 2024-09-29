@@ -115,4 +115,8 @@ public class WordleAnswer {
 
         return new WordleWord(guess, feedback);
     }
+
+    public String getWORD() {
+        return WORD;
+    }
 }

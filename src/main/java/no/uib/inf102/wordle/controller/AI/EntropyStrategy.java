@@ -1,6 +1,7 @@
 package no.uib.inf102.wordle.controller.AI;
 
 import no.uib.inf102.wordle.model.Dictionary;
+import no.uib.inf102.wordle.model.word.CandidateGuess;
 import no.uib.inf102.wordle.model.word.WordleWord;
 import no.uib.inf102.wordle.model.word.WordleWordList;
 
@@ -35,10 +36,10 @@ public class EntropyStrategy implements IStrategy {
         String bestGuess = null;
 
         for (String guess : dictionary.getGuessWordsList()) {
-            double infoGain = EntropyUtility.informationGain(guess, guesses.possibleAnswers()).getInfoGain();
-            if (infoGain > bestInfoGain) {
-                bestGuess = guess;
-                bestInfoGain = infoGain;
+            CandidateGuess candidateGuess = EntropyUtility.informationGain(guess, guesses.possibleAnswers());
+            if (candidateGuess.getInfoGain() > bestInfoGain) {
+                bestGuess = candidateGuess.getGuess();
+                bestInfoGain = candidateGuess.getInfoGain();
             }
         }
 

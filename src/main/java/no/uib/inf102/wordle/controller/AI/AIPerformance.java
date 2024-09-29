@@ -30,6 +30,7 @@ public class AIPerformance {
         strategies.add(new FrequencyStrategy(dictionary));
         strategies.add(new EntropyStrategy(dictionary));
         strategies.add(new EntropyStrategy2(dictionary));
+        // strategies.add(new EntropyParallelized(dictionary));
 
         Map<IStrategy, AIStatistics> stats = new HashMap<>();
         System.out.println("\nStrategies running...");

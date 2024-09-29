@@ -17,7 +17,7 @@ public class AIStatistics {
 	private int wins;
 	private int maxGuesses;
 	private int failures;
-	public Map<Integer,Integer> gamesCompletedIn = new HashMap<>();
+	public Map<Integer, Integer> gamesCompletedIn = new HashMap<>();
 
 	/**
 	 * Create a statistics object for an AI Strategy.
@@ -38,8 +38,8 @@ public class AIStatistics {
 	public void addGame(int guesses) {
 		numGames++;
 		totalGuesses += guesses;
-		increase(gamesCompletedIn,guesses);
-		
+		increase(gamesCompletedIn, guesses);
+
 		if (guesses <= 6)
 			wins++;
 		maxGuesses = Math.max(maxGuesses, guesses);
@@ -48,11 +48,12 @@ public class AIStatistics {
 	/**
 	 * Increases the value of a given key by 1
 	 * If key is not present in map, the value of this key is sat to 1
+	 * 
 	 * @param map a map from anything to an Integer
-	 * @param key 
+	 * @param key
 	 */
 	public static <K> void increase(Map<K, Integer> map, K key) {
-		map.put(key, map.getOrDefault(key,0)+1);
+		map.put(key, map.getOrDefault(key, 0) + 1);
 	}
 
 	/**
@@ -114,7 +115,7 @@ public class AIStatistics {
 	public int getFailures() {
 		return failures;
 	}
-	
+
 	public Map<Integer, Integer> getDistribution() {
 		return gamesCompletedIn;
 	}
@@ -127,39 +128,39 @@ public class AIStatistics {
 		return strategyName;
 	}
 
-    /**
-     * Prints statistical information (like average guesses and max guesses) about
-     * an AI's performance over many Wordle games.
-     * 
-     * @param stats the stats to print
-     */
-    public static void printResult(AIStatistics stats) {
-        DecimalFormat formatter = new DecimalFormat("0.000");
-        if (stats.getFailures() > 0)
-            System.out.printf("%-25s %15s guesses%n", stats.getStrategyName() + ":", "Too many");
-        else {
-            String formattedCount = formatter.format(stats.getAverage());
-            // System.out.printf("%-25s %15s guesses %n", guesserName + ":",
-            // formattedCount);
-            System.out.printf("%-25s %15s guesses %5d/%d won   max %d%n", stats.getStrategyName() + ":", formattedCount,
-                    stats.getWins(), stats.getNumGames(), stats.getMaxGuesses());
-        }
-    }
+	/**
+	 * Prints statistical information (like average guesses and max guesses) about
+	 * an AI's performance over many Wordle games.
+	 * 
+	 * @param stats the stats to print
+	 */
+	public static void printResult(AIStatistics stats) {
+		DecimalFormat formatter = new DecimalFormat("0.000");
+		if (stats.getFailures() > 0)
+			System.out.printf("%-25s %15s guesses%n", stats.getStrategyName() + ":", "Too many");
+		else {
+			String formattedCount = formatter.format(stats.getAverage());
+			// System.out.printf("%-25s %15s guesses %n", guesserName + ":",
+			// formattedCount);
+			System.out.printf("%-25s %15s guesses %5d/%d won   max %d%n", stats.getStrategyName() + ":", formattedCount,
+					stats.getWins(), stats.getNumGames(), stats.getMaxGuesses());
+		}
+	}
 
-    
-    /**
-     * Prints a histogram showing for each number of guesses how many 
-     * percent of the games was solved with that number of guesses
-     * @param stats
-     */
-    public static void printHistogram(AIStatistics stats) {
-    	if(stats.getNumGames()==0)
-    		return;
-    	System.out.println("Histogram for "+stats.getStrategyName());
-    	int n = stats.getNumGames();
-    	for(int i=1; i<=6; i++) {
-    		int p = stats.getDistribution().getOrDefault(i,0)*100/n;
-    		System.out.println(i+": "+"=".repeat(p));
-    	}
-    }
+	/**
+	 * Prints a histogram showing for each number of guesses how many
+	 * percent of the games was solved with that number of guesses
+	 * 
+	 * @param stats
+	 */
+	public static void printHistogram(AIStatistics stats) {
+		if (stats.getNumGames() == 0)
+			return;
+		System.out.println("Histogram for " + stats.getStrategyName());
+		int n = stats.getNumGames();
+		for (int i = 1; i <= 6; i++) {
+			int p = stats.getDistribution().getOrDefault(i, 0) * 100 / n;
+			System.out.println(i + ": " + "=".repeat(p));
+		}
+	}
 }
