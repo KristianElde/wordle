@@ -48,30 +48,36 @@ public class EntropyStrategy2 implements IStrategy {
 
         double bestInfoGain = Double.MIN_VALUE;
         String bestGuess = null;
+        if (n_guesses < 2) {
+            for (CandidateGuess candidateGuess : bestGuesses) {
+                Double infoGain = candidateGuess.getInfoGain();
+                for (String outcome : candidateGuess.getOutcomeFrequencies().keySet()) {
+                    Double currentInfoGain = Double.MIN_VALUE;
+                    WordleWordList wordList = new WordleWordList(dictionary,
+                            guesses.possibleAnswers());
+                    WordleWord word = EntropyUtility.wordleWord(candidateGuess.getGuess(), outcome,
+                            dictionary.WORD_LENGTH);
+                    wordList.eliminateWords(word);
 
-        for (CandidateGuess candidateGuess : bestGuesses) {
-            Double currentInfoGain = 0d;
-            Double infoGain = candidateGuess.getInfoGain();
-            for (String outcome : candidateGuess.getOutcomeFrequencies().keySet()) {
-                WordleWordList wordList = new WordleWordList(dictionary,
-                        guesses.possibleAnswers());
-                WordleWord word = EntropyUtility.wordleWord(candidateGuess.getGuess(), outcome,
-                        dictionary.WORD_LENGTH);
-                wordList.eliminateWords(word);
+                    double p = ((double) candidateGuess.getOutcomeFrequencies().get(outcome))
+                            / guesses.possibleAnswers().size();
 
-                double p = ((double) candidateGuess.getOutcomeFrequencies().get(outcome))
-                        / guesses.possibleAnswers().size();
+                    for (String guess : wordList.possibleAnswers())
+                        currentInfoGain = Math.max(currentInfoGain,
+                                EntropyUtility.informationGain(guess, wordList.possibleAnswers()).getInfoGain());
+                    infoGain += p * currentInfoGain;
 
-                for (String guess : wordList.possibleAnswers())
-                    currentInfoGain = Math.max(currentInfoGain,
-                            EntropyUtility.informationGain(guess, wordList.possibleAnswers()).getInfoGain());
-                infoGain += p * currentInfoGain;
-
+                }
+                if (infoGain > bestInfoGain) {
+                    bestGuess = candidateGuess.getGuess();
+                    bestInfoGain = infoGain;
+                }
             }
-            if (infoGain > bestInfoGain) {
-                bestGuess = candidateGuess.getGuess();
-                bestInfoGain = infoGain;
+        } else {
+            while (bestGuesses.size() != 1) {
+                bestGuesses.poll();
             }
+            bestGuess = bestGuesses.poll().getGuess();
         }
 
         if (firstGuessWord == null) {
@@ -79,7 +85,6 @@ public class EntropyStrategy2 implements IStrategy {
             System.out.println(firstGuessWord);
         }
 
-        n_guesses++;
         return bestGuess;
     }
 
