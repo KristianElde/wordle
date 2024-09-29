@@ -5,10 +5,7 @@ import java.util.List;
 import java.util.PriorityQueue;
 
 import no.uib.inf102.wordle.model.Dictionary;
-import no.uib.inf102.wordle.model.word.AnswerType;
 import no.uib.inf102.wordle.model.word.CandidateGuess;
-import no.uib.inf102.wordle.model.word.WordleAnswer;
-import no.uib.inf102.wordle.model.word.WordleCharacter;
 import no.uib.inf102.wordle.model.word.WordleWord;
 import no.uib.inf102.wordle.model.word.WordleWordList;
 
@@ -16,8 +13,8 @@ public class EntropyStrategy2 implements IStrategy {
 
     private final Dictionary dictionary;
     private WordleWordList guesses;
-    private boolean firstGuess = true;
     private String firstGuessWord;
+    private int n_guesses = 0;
 
     public EntropyStrategy2(Dictionary dict) {
         this.dictionary = dict;
@@ -26,20 +23,21 @@ public class EntropyStrategy2 implements IStrategy {
 
     @Override
     public String makeGuess(WordleWord feedback) {
-        if (feedback != null)
-            guesses.eliminateWords(feedback);
-
-        if (firstGuessWord != null && firstGuess) {
-            firstGuess = false;
+        if (feedback == null && firstGuessWord != null) {
+            n_guesses++;
             return firstGuessWord;
         }
 
-        if (guesses.possibleAnswers().size() == 1)
-            return guesses.possibleAnswers().get(0);
+        if (feedback != null)
+            guesses.eliminateWords(feedback);
 
+        if (guesses.possibleAnswers().size() == 1) {
+            n_guesses++;
+            return guesses.possibleAnswers().get(0);
+        }
         PriorityQueue<CandidateGuess> bestGuesses = new PriorityQueue<>();
 
-        for (String guess : dictionary.getGuessWordsList()) {
+        for (String guess : (n_guesses < 2 ? dictionary.getGuessWordsList() : guesses.possibleAnswers())) {
             CandidateGuess candidateGuess = informationGain(guess, guesses.possibleAnswers());
             if (bestGuesses.size() < 10)
                 bestGuesses.add(candidateGuess);
@@ -56,7 +54,7 @@ public class EntropyStrategy2 implements IStrategy {
             for (String outcome : candidateGuess.getOutcomeFrequencies().keySet()) {
                 WordleWordList wordList = new WordleWordList(dictionary,
                         guesses.possibleAnswers());
-                WordleWord word = wordleWord(candidateGuess.getGuess(), outcome);
+                WordleWord word = entropyUtility.wordleWord(candidateGuess.getGuess(), outcome, dictionary.WORD_LENGTH);
                 wordList.eliminateWords(word);
                 double p = ((double) candidateGuess.getOutcomeFrequencies().get(outcome))
                         / guesses.possibleAnswers().size();
@@ -76,66 +74,25 @@ public class EntropyStrategy2 implements IStrategy {
             System.out.println(firstGuessWord);
         }
 
+        n_guesses++;
         return bestGuess;
     }
 
     @Override
     public void reset() {
         guesses = new WordleWordList(dictionary);
-        firstGuess = true;
-    }
-
-    private String feedbackString(WordleWord feedback) {
-        String feedbackString = "";
-        for (WordleCharacter wordleCharacter : feedback) {
-            switch (wordleCharacter.answerType) {
-                case WRONG -> feedbackString += 'W';
-                case MISPLACED -> feedbackString += 'M';
-                case CORRECT -> feedbackString += 'C';
-                default -> throw new IllegalArgumentException();
-            }
-        }
-        return feedbackString;
-    }
-
-    private WordleWord wordleWord(String guess, String feedbackString) {
-        AnswerType[] answerTypes = new AnswerType[dictionary.WORD_LENGTH];
-        for (int i = 0; i < answerTypes.length; i++) {
-            switch (feedbackString.charAt(i)) {
-                case 'W' -> answerTypes[i] = AnswerType.WRONG;
-                case 'M' -> answerTypes[i] = AnswerType.MISPLACED;
-                case 'C' -> answerTypes[i] = AnswerType.CORRECT;
-                default -> throw new IllegalArgumentException(feedbackString);
-            }
-        }
-
-        return new WordleWord(guess, answerTypes);
+        n_guesses = 0;
     }
 
     private CandidateGuess informationGain(String guess, List<String> possibleAnswers) {
-        HashMap<String, Integer> outcomeFrequencies = getOutcomeFrequencies(guess, possibleAnswers);
+        HashMap<String, Integer> outcomeFrequencies = entropyUtility.getOutcomeFrequencies(guess, possibleAnswers);
 
         double informationGain = 0;
         for (String outcome : outcomeFrequencies.keySet()) {
             double p = ((double) outcomeFrequencies.get(outcome)) / guesses.possibleAnswers().size();
-            informationGain += (p * log2(1 / p));
+            informationGain += (p * entropyUtility.log2(1 / p));
         }
         return new CandidateGuess(guess, informationGain, outcomeFrequencies);
-    }
-
-    private HashMap<String, Integer> getOutcomeFrequencies(String guess, List<String> possibleAnswers) {
-        HashMap<String, Integer> outcomeFrequencies = new HashMap<>();
-
-        for (String answer : possibleAnswers) {
-            WordleWord feedback = WordleAnswer.matchWord(guess, answer);
-            String feedbackString = feedbackString(feedback);
-            outcomeFrequencies.put(feedbackString, outcomeFrequencies.getOrDefault(feedbackString, 0) + 1);
-        }
-        return outcomeFrequencies;
-    }
-
-    private double log2(double n) {
-        return Math.log(n) / Math.log(2);
     }
 
 }
