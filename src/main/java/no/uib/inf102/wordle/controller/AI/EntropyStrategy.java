@@ -1,7 +1,5 @@
 package no.uib.inf102.wordle.controller.AI;
 
-import java.util.HashMap;
-
 import no.uib.inf102.wordle.model.Dictionary;
 import no.uib.inf102.wordle.model.word.WordleWord;
 import no.uib.inf102.wordle.model.word.WordleWordList;
@@ -33,12 +31,12 @@ public class EntropyStrategy implements IStrategy {
             return guesses.possibleAnswers().get(0);
         }
 
-        double bestInfoGain = 0d;
+        double bestInfoGain = Double.MIN_VALUE;
         String bestGuess = null;
 
-        for (String guess : (n_guesses < 2 ? dictionary.getGuessWordsList() : guesses.possibleAnswers())) {
-            double infoGain = informationGain(guess);
-            if (infoGain < bestInfoGain) {
+        for (String guess : dictionary.getGuessWordsList()) {
+            double infoGain = EntropyUtility.informationGain(guess, guesses.possibleAnswers()).getInfoGain();
+            if (infoGain > bestInfoGain) {
                 bestGuess = guess;
                 bestInfoGain = infoGain;
             }
@@ -57,19 +55,6 @@ public class EntropyStrategy implements IStrategy {
     public void reset() {
         guesses = new WordleWordList(dictionary);
         n_guesses = 0;
-    }
-
-    private double informationGain(String guess) {
-        HashMap<String, Integer> outcomeFrequencies = entropyUtility.getOutcomeFrequencies(guess,
-                guesses.possibleAnswers());
-
-        double informationGain = 0;
-        for (String outcome : outcomeFrequencies.keySet()) {
-            double p = ((double) outcomeFrequencies.get(outcome)) / guesses.possibleAnswers().size();
-            informationGain -= (p * entropyUtility.log2(1 / p));
-        }
-
-        return informationGain;
     }
 
 }

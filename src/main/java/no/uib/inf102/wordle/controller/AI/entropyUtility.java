@@ -4,11 +4,12 @@ import java.util.HashMap;
 import java.util.List;
 
 import no.uib.inf102.wordle.model.word.AnswerType;
+import no.uib.inf102.wordle.model.word.CandidateGuess;
 import no.uib.inf102.wordle.model.word.WordleAnswer;
 import no.uib.inf102.wordle.model.word.WordleCharacter;
 import no.uib.inf102.wordle.model.word.WordleWord;
 
-public class entropyUtility {
+public class EntropyUtility {
 
     static String feedbackString(WordleWord feedback) {
         String feedbackString = "";
@@ -42,7 +43,7 @@ public class entropyUtility {
 
         for (String answer : possibleAnswers) {
             WordleWord feedback = WordleAnswer.matchWord(guess, answer);
-            String feedbackString = entropyUtility.feedbackString(feedback);
+            String feedbackString = EntropyUtility.feedbackString(feedback);
             outcomeFrequencies.put(feedbackString, outcomeFrequencies.getOrDefault(feedbackString, 0) + 1);
         }
         return outcomeFrequencies;
@@ -50,6 +51,17 @@ public class entropyUtility {
 
     static double log2(double n) {
         return Math.log(n) / Math.log(2);
+    }
+
+    static CandidateGuess informationGain(String guess, List<String> possibleAnswers) {
+        HashMap<String, Integer> outcomeFrequencies = EntropyUtility.getOutcomeFrequencies(guess, possibleAnswers);
+
+        double informationGain = 0;
+        for (String outcome : outcomeFrequencies.keySet()) {
+            double p = ((double) outcomeFrequencies.get(outcome)) / possibleAnswers.size();
+            informationGain += (p * EntropyUtility.log2(1 / p));
+        }
+        return new CandidateGuess(guess, informationGain, outcomeFrequencies);
     }
 
 }
