@@ -10,7 +10,6 @@ public class EntropyStrategy implements IStrategy {
     private final Dictionary dictionary;
     private WordleWordList guesses;
     private String firstGuessWord = null;
-    private int n_guesses = 0;
 
     public EntropyStrategy(Dictionary dict) {
         this.dictionary = dict;
@@ -20,7 +19,6 @@ public class EntropyStrategy implements IStrategy {
     @Override
     public String makeGuess(WordleWord feedback) {
         if (feedback == null && firstGuessWord != null) {
-            n_guesses++;
             return firstGuessWord;
         }
 
@@ -28,7 +26,6 @@ public class EntropyStrategy implements IStrategy {
             guesses.eliminateWords(feedback);
 
         if (guesses.possibleAnswers().size() == 1) {
-            n_guesses++;
             return guesses.possibleAnswers().get(0);
         }
 
@@ -48,14 +45,12 @@ public class EntropyStrategy implements IStrategy {
             firstGuessWord = bestGuess;
         }
 
-        n_guesses++;
         return bestGuess;
     }
 
     @Override
     public void reset() {
         guesses = new WordleWordList(dictionary);
-        n_guesses = 0;
     }
 
 }
